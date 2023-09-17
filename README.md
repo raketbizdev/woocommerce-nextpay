@@ -1,5 +1,7 @@
 # WooCommerce NextPay Extension
 
+![NextPay Logo](https://raw.githubusercontent.com/your-username/woocommerce-nextpay/main/assets/nextpay-logo-dark.svg)
+
 The WooCommerce NextPay Extension bridges your online store with NextPay's robust payment gateway. Elevate your WooCommerce store's capabilities and provide your customers with a trusted and reliable payment solution.
 
 ## Table of Contents
