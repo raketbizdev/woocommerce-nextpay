@@ -1,0 +1,10 @@
+/* Target the NextPay logo specifically */
+#woocommerce_nextpay_icon {
+  background-color: #4B60FA;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#woocommerce_nextpay_icon img {
+  vertical-align: middle;
+}
