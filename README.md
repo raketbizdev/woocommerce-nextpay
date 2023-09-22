@@ -26,6 +26,7 @@ With this extension, store owners can effortlessly offer their customers a wider
 1. Upload the `woocommerce-nextpay` plugin folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Navigate to WooCommerce -> Settings -> Payments -> NextPay to configure the plugin.
+   ![NextPay Settings](https://github.com/raketbizdev/woocommerce-nextpay/blob/main/assets/next-pay-settings.png)
 
 ## Usage
 
@@ -45,7 +46,7 @@ Now, NextPay should be available as a payment option at checkout.
 
 ## Support
 
-For support, feature requests, or bug reports, please contact us at [support@rnopal.com](mailto:support@rnopal.com).
+For support, feature requests, or bug reports, please contact us at [rnopal](https://www.facebook.com/zyber3).
 
 ## License
 

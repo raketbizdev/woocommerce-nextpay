@@ -1,10 +1,11 @@
 /* Target the NextPay logo specifically */
-#woocommerce_nextpay_icon {
+#payment_method_nextpay {
   background-color: #4B60FA;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-#woocommerce_nextpay_icon img {
+li.payment_method_nextpay img {
   vertical-align: middle;
+  width: 200px;
 }

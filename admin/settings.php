@@ -58,11 +58,14 @@ final class NextPay_Settings {
           'type' => 'sectionend',
           'id'   => 'wc_nextpay_wc_nextpay_api_mode_end'
       ],
-        'sandbox_settings_title' => [
-            'name' => __('Sandbox Settings', 'woo_nextpay'),
-            'type' => 'title',
-            'desc' => __('Enter your Sandbox Client and Secret Keys below:', 'woo_nextpay'),
-            'id'   => 'wc_nextpay_sandbox_settings_title'
+      'sandbox_settings_title' => [
+        'name' => __('Sandbox Settings', 'woo_nextpay'),
+        'type' => 'title',
+        'desc' => sprintf(
+            __('Get your Sandbox API keys from <a href="%s" target="_blank">Nextpage sandbox page</a>.', 'woo_nextpay'),
+            'https://app-sandbox.nextpay.world/#/login'
+        ),
+        'id'   => 'wc_nextpay_sandbox_settings_title'
         ],
         'sandbox_client_key' => [
             'name' => __('Sandbox Client Key', 'woo_nextpay'),
@@ -83,7 +86,10 @@ final class NextPay_Settings {
         'production_settings_title' => [
             'name' => __('Production Settings', 'woo_nextpay'),
             'type' => 'title',
-            'desc' => __('Enter your Production Client and Secret Keys below:', 'woo_nextpay'),
+            'desc' => sprintf(
+                __('Get your Production API keys from <a href="%s" target="_blank">Nextpay page</a>.', 'woo_nextpay'),
+                'https://app.nextpay.world/'
+            ),
             'id'   => 'wc_nextpay_production_settings_title'
         ],
         'production_client_key' => [

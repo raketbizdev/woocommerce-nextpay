@@ -18,9 +18,6 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-    return;
-}
 
 final class WC_NextPay {
 
@@ -72,9 +69,15 @@ final class WC_NextPay {
         }
         wp_enqueue_style('nextpay_admin_styles', plugin_dir_url(__FILE__) . 'assets/admin.css');
     }
+    public static function wc_nextpay_activation_check() {
+        if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+            deactivate_plugins(plugin_basename(__FILE__)); // Deactivate our plugin
+            wp_die(__('WooCommerce NextPay requires WooCommerce to be activated first.', 'woo_nextpay'), 'Plugin dependency check', array('back_link' => true));
+        }
+    }
 
 }
-
+register_activation_hook(__FILE__, array('WC_NextPay', 'wc_nextpay_activation_check'));
 function wc_nextpay() {
     return WC_NextPay::instance();
 }
