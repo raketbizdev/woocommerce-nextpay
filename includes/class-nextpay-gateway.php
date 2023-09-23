@@ -93,7 +93,7 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
     $order = wc_get_order($order_id);
   
     $request_body = $this->generate_request_body($order);
-    error_log('Request body: ' . $request_body);
+    // error_log('Request body: ' . $request_body);
     $headers = $this->generate_headers($request_body);
   
     $response = $this->send_request($request_body, $headers);
@@ -193,6 +193,51 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
         wc_add_notice(__('Payment error:', 'woo_nextpay') . $errorMessage, 'error');
         return;
     }
+  }
+
+  private function generate_invoice_data($order) {
+    // This is a basic example. You might need to adjust the data based on your needs.
+    return [
+        'title' => $order->get_billing_company(),
+        'description' => 'Order details for order #' . $order->get_order_number(),
+        'amount' => $order->get_total(),
+        'currency' => $order->get_currency(),
+        'invoice_number' => $order->get_order_number(),
+        'due_date' => date('Y-m-d H:i:s', strtotime('+7 days')), // Example: Due in 7 days
+        'invoice_date' => date('Y-m-d H:i:s'),
+        'footer_notes' => 'Please pay the fees before the due date.',
+        'private_notes' => 'Thank you for your purchase!',
+        'status' => 'published',
+        'url' => $order->get_view_order_url()
+    ];
+  }
+  
+  private function send_invoice_email($order_id) {
+    $order = wc_get_order($order_id);
+    $invoice_data = $this->generate_invoice_data($order);
+    $invoice_content = $this->generate_invoice_content($invoice_data);
+
+    // Email details
+    $to = $order->get_billing_email();
+    $subject = 'Invoice #' . $invoice_data['invoice_number'] . ' from ' . $invoice_data['title'];
+    $headers = ['Content-Type: text/html; charset=UTF-8'];
+
+    // Use WordPress's wp_mail function to send the email
+    wp_mail($to, $subject, $invoice_content, $headers);
+  }
+  private function generate_invoice_content($invoice_data) {
+      $content = '<h2>Invoice #' . $invoice_data['invoice_number'] . '</h2>';
+      $content .= '<p><strong>Title:</strong> ' . $invoice_data['title'] . '</p>';
+      $content .= '<p><strong>Description:</strong> ' . $invoice_data['description'] . '</p>';
+      $content .= '<p><strong>Amount:</strong> ' . $invoice_data['amount'] . ' ' . $invoice_data['currency'] . '</p>';
+      $content .= '<p><strong>Due Date:</strong> ' . $invoice_data['due_date'] . '</p>';
+      $content .= '<p><strong>Invoice Date:</strong> ' . $invoice_data['invoice_date'] . '</p>';
+      $content .= '<p><strong>Footer Notes:</strong> ' . $invoice_data['footer_notes'] . '</p>';
+      $content .= '<p><strong>Private Notes:</strong> ' . $invoice_data['private_notes'] . '</p>';
+      $content .= '<p><strong>Status:</strong> ' . $invoice_data['status'] . '</p>';
+      $content .= '<p><a href="' . $invoice_data['url'] . '">View Invoice Online</a></p>';
+
+      return $content;
   }
 
 }
