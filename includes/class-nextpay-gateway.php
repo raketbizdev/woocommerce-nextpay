@@ -102,22 +102,37 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
   }
   
   private function generate_request_body($order) {
+    // Get order items and construct a description array
+    $items = $order->get_items();
+    $description_array = [];
+
+    foreach ($items as $item) {
+        $product = $item->get_product();
+        $description_array[] = [
+            'product_name' => $product->get_name(),
+            'quantity' => $item->get_quantity(),
+            'price' => $product->get_price()
+        ];
+    }
+
+    // Convert the description array to a JSON string
+    $description_json = json_encode($description_array, JSON_UNESCAPED_SLASHES);
+
     return json_encode([
-      'title' => $order->get_billing_company(),
-      'amount' => $order->get_total() * 100,
-      'currency' => $order->get_currency(),
-      'description' => sprintf(__('Order %s', 'woo_nextpay'), $order->get_order_number()),
-      'private_notes' => 'Order ' . $order->get_order_number(),
-      'limit' => 0,
-      'redirect_url' => $this->get_return_url($order),
-      'nonce' => round(microtime(true) * 1000)
+        'title' => $order->get_billing_company(),
+        'amount' => $order->get_total(),
+        'currency' => $order->get_currency(),
+        'description' => $description_json,
+        'private_notes' => 'Order ' . $order->get_order_number(),
+        'limit' => 0,
+        'redirect_url' => $this->get_return_url($order),
+        'nonce' => round(microtime(true) * 1000)
     ], JSON_UNESCAPED_SLASHES);
-}
+  }
 
   
   private function generate_headers($request_body) {
     $signature = hash_hmac('sha256', $request_body, $this->get_secret_key());
-    error_log('Signature: ' . $signature);
     return [
       "Accept: application/json",
       "Content-Type: application/json",
@@ -145,11 +160,8 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
     ]);
   
     $response = curl_exec($curl);
-
-
     $info = curl_getinfo($curl);
-    error_log('NextPay cURL Info: ' . print_r($info, true));
-
+    error_log('NextPay Response Body: ' . $response);
     $err = curl_error($curl);
   
     curl_close($curl);
@@ -162,31 +174,27 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
   }
   
   private function handle_response($response_data, $order) {
-    // Check if response_data is an array and contains the 'status' key
-    if (!is_array($response_data) || !isset($response_data['status'])) {
+    // Check if response_data is an array and contains the necessary keys
+    if (!is_array($response_data) || !isset($response_data['status']) || !isset($response_data['url'])) {
         wc_add_notice(__('Payment error: Invalid response from NextPay.', 'woo_nextpay'), 'error');
         error_log('NextPay Invalid Response: ' . print_r($response_data, true));
         return;
     }
 
-    if ($response_data['status'] == 'success') {
+    if ($response_data['status'] == 'enabled') {
         $order->payment_complete();
         $order->add_order_note(__('Payment successfully processed using NextPay.', 'woo_nextpay'));
         return [
             'result'   => 'success',
-            'redirect' => $response_data['payment_url']
+            'redirect' => $response_data['url']
         ];
     } else {
-        // Check if the 'message' key exists before accessing it
-        $errorMessage = isset($response_data['message']) ? $response_data['message'] : 'Unknown error';
+        $errorMessage = isset($response_data['description']) ? $response_data['description'] : 'Unknown error';
         wc_add_notice(__('Payment error:', 'woo_nextpay') . $errorMessage, 'error');
         return;
     }
   }
 
-
 }
 
-
-// Initialization
 WC_NextPay_Gateway::instance();
