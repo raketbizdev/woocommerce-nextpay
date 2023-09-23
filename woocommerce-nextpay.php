@@ -18,6 +18,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// Nextpay API endpoints
+define('WC_NEXTPAY_SANDBOX_ENDPOINT', 'https://api-sandbox.nextpay.world/v2');
+define('WC_NEXTPAY_PRODUCTION_ENDPOINT', 'https://api.nextpay.world/v2');
 
 final class WC_NextPay {
 
@@ -44,6 +47,14 @@ final class WC_NextPay {
     private function define_constants() {
         define('WC_NEXTPAY_PLUGIN_DIR', plugin_dir_path(__FILE__));
     }
+
+    public function get_api_endpoint() {
+        if (NextPay_Settings::get_api_mode() === 'sandbox') {
+            return WC_NEXTPAY_SANDBOX_ENDPOINT;
+        }
+        return WC_NEXTPAY_PRODUCTION_ENDPOINT;
+    }
+
 
     private function includes() {
         require WC_NEXTPAY_PLUGIN_DIR . 'admin/settings.php';
