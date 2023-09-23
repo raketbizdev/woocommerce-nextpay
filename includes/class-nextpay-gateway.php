@@ -90,23 +90,10 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
     return $this->get_key_based_on_mode('secret_key');
   }
   public function process_payment($order_id) {
-
-    // $sandbox_client_key = $this->get_client_key();
-    $sandbox_secret_key = $this->get_secret_key();
-    // $production_client_key = get_option('wc_nextpay_production_client_key');
-    // $production_secret_key = get_option('wc_nextpay_production_secret_key');
-
-    // Log the keys (for debugging purposes only!)
-    // error_log('Sandbox Client Key: ' . $sandbox_client_key);
-    error_log('Sandbox Secret Key: ' . $sandbox_secret_key);
-    // error_log('Production Client Key: ' . $production_client_key);
-    // error_log('Production Secret Key: ' . $production_secret_key);
-    
-
     $order = wc_get_order($order_id);
   
     $request_body = $this->generate_request_body($order);
-    error_log('Request Body: ' . $request_body);
+    error_log('Request body: ' . $request_body);
     $headers = $this->generate_headers($request_body);
   
     $response = $this->send_request($request_body, $headers);
@@ -124,8 +111,9 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
       'limit' => 0,
       'redirect_url' => $this->get_return_url($order),
       'nonce' => round(microtime(true) * 1000)
-    ]);
-  }
+    ], JSON_UNESCAPED_SLASHES);
+}
+
   
   private function generate_headers($request_body) {
     $signature = hash_hmac('sha256', $request_body, $this->get_secret_key());
@@ -137,7 +125,7 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
       "idempotency-key: " . uniqid(),
       "signature: " . $signature
     ];
-}
+  }
   
   private function send_request($request_body, $headers) {
     $api_endpoint = WC_NextPay::instance()->get_api_endpoint();
@@ -189,10 +177,13 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
             'redirect' => $response_data['payment_url']
         ];
     } else {
-        wc_add_notice(__('Payment error:', 'woo_nextpay') . $response_data['message'], 'error');
+        // Check if the 'message' key exists before accessing it
+        $errorMessage = isset($response_data['message']) ? $response_data['message'] : 'Unknown error';
+        wc_add_notice(__('Payment error:', 'woo_nextpay') . $errorMessage, 'error');
         return;
     }
-}  
+  }
+
 
 }
 
