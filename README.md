@@ -50,6 +50,10 @@ Now, NextPay should be available as a payment option at checkout.
 
 For support, feature requests, or bug reports, please contact us at [rnopal](https://www.facebook.com/zyber3).
 
+### Buy me a Beer
+
+[Buy me a beer](https://app.nextpay.world/#/pl/pCg_WzOKu)
+
 ## License
 
 This plugin is licensed under the GPL v2 or later.
