@@ -27,6 +27,8 @@ With this extension, store owners can effortlessly offer their customers a wider
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Navigate to WooCommerce -> Settings -> Payments -> NextPay to configure the plugin.
    ![NextPay Settings](https://github.com/raketbizdev/woocommerce-nextpay/blob/main/assets/next-pay-settings.png)
+   ![NextPay Settings1](https://github.com/raketbizdev/woocommerce-nextpay/blob/main/assets/payment-setting1.png)
+   ![NextPay Settings2](https://github.com/raketbizdev/woocommerce-nextpay/blob/main/assets/payment-setting2.png)
 
 ## Usage
 

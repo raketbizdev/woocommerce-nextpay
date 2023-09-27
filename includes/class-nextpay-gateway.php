@@ -196,14 +196,13 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
   }
 
   private function generate_invoice_data($order) {
-    // This is a basic example. You might need to adjust the data based on your needs.
     return [
         'title' => $order->get_billing_company(),
         'description' => 'Order details for order #' . $order->get_order_number(),
         'amount' => $order->get_total(),
         'currency' => $order->get_currency(),
         'invoice_number' => $order->get_order_number(),
-        'due_date' => date('Y-m-d H:i:s', strtotime('+7 days')), // Example: Due in 7 days
+        'due_date' => date('Y-m-d H:i:s', strtotime('+7 days')),
         'invoice_date' => date('Y-m-d H:i:s'),
         'footer_notes' => 'Please pay the fees before the due date.',
         'private_notes' => 'Thank you for your purchase!',
@@ -211,7 +210,7 @@ final class WC_NextPay_Gateway extends WC_Payment_Gateway {
         'url' => $order->get_view_order_url()
     ];
   }
-  
+
   private function send_invoice_email($order_id) {
     $order = wc_get_order($order_id);
     $invoice_data = $this->generate_invoice_data($order);
